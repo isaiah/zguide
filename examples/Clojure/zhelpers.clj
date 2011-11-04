@@ -68,8 +68,14 @@
 
 (defmethod send String
   ([#^ZMQ$Socket socket #^String message flags]
-     (.send socket (.getBytes message) flags))
+     (send socket (.getBytes message) flags))
   ([#^ZMQ$Socket socket #^String message]
+     (send socket message ZMQ/NOBLOCK)))
+
+(defmethod send (Class/forName "[B")
+  ([#^ZMQ$Socket socket #^bytes message flags]
+     (.send socket message flags))
+  ([#^ZMQ$Socket socket #^bytes message]
      (send socket message ZMQ/NOBLOCK)))
 
 (defn send-more [#^ZMQ$Socket socket message]
