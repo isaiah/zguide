@@ -14,10 +14,10 @@
 (defn -main [& args]
   (let [subscriber (-> 1 mq/context (mq/socket mq/sub))
         filter (or (first args) "10001 ")
-        args-temp (atom 0)
+        total-temp (atom 0)
         nbr 100]
     (println "Collecting updates from weather server...")
-    (mq/connect subscriber "ipc://weather")
+    (mq/connect subscriber "tcp://10.18.102.1:8100")
     (mq/subscribe subscriber filter)
     (dotimes [i nbr]
       (let [string (mq/recv-str subscriber)
