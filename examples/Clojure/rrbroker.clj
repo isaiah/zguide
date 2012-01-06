@@ -20,20 +20,20 @@
     (while (not (.isInterrupted (Thread/currentThread)))
       (.poll items 250000)
       (if (.pollin items 0)
-        (loop [#^String message (mq/recv-str frontend)]
+        (loop [message (mq/recv frontend)]
           (let [more (.hasReceiveMore frontend)]
             (if more
               (do
                 (mq/send-more backend message)
-                (recur (mq/recv-str frontend)))
+                (recur (mq/recv frontend)))
               (mq/send backend message)))))
       (if (.pollin items 1)
-        (loop [#^String message (mq/recv-str backend)]
+        (loop [message (mq/recv backend)]
           (let [more (.hasReceiveMore backend)]
             (if more
               (do
                 (mq/send-more frontend message)
-                (recur (mq/recv-str backend)))
+                (recur (mq/recv backend)))
               (mq/send frontend message))))))
     (.close frontend)
     (.close backend)
